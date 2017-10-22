@@ -1,0 +1,128 @@
+%{
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include "node.hpp"
+#include "y.tab.h"
+
+using std::string;
+using std::endl;
+using std::cerr;
+using std::cout;
+
+void yyerror (const char *string)
+{
+ cerr << string << endl;
+ return;
+}
+%}
+
+%option yylineno noyywrap
+%option outfile ="program3_lex.cpp"
+
+SPACE [ \t]
+
+%%
+
+int {
+   return INT;
+   }
+print {
+   return PRINT;
+   }
+void { 
+   return VOID;
+   }
+if {
+   return IF;
+   }
+read {
+   return READ;
+   }
+else {
+   return ELSE;
+   }
+class {
+   return CLASS;
+   }
+return {
+   return RETURN;
+   }
+this {
+   return THIS;
+   }
+new {
+   return NEW;
+   }
+while {
+   return WHILE;
+   }
+[_a-zA-Z][_a-zA-Z0-9]* {
+   return ID;
+   }
+\( {
+   return LPAREN;
+   }
+\) {
+   return RPAREN;
+   } 
+\+ {
+   return PLUS;
+   }
+-  {
+   return MINUS;
+   }
+\* {
+   return TIMES;
+   }
+\= {
+   return EQUALS;
+   }
+\/ {
+   return DIV;
+   }
+{SPACE}+ {
+   }
+[0-9]+ {
+    return NUM;
+   }
+\=\= {
+   return EQUALTO;
+   }
+\<\= {
+   return LESSOREQ;
+   }
+\>\= {
+   return GREATEROREQ;
+   }
+\!\= {
+   return NOTEQUAL;
+   }
+\> {
+   return GREATER;
+   }
+\< {
+   return LESS;
+   }
+\! {
+   return NOT;
+   }
+\|\| { 
+   return OR;
+   }
+\&\& {
+   return AND;
+   }
+\% {
+   return MOD;
+   }
+\/\/[^\n]*\n {
+   }
+[\n] {
+   }
+.  {
+   cerr << yytext << endl;
+   }
+
+%%
+
