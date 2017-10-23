@@ -3,12 +3,16 @@
 #include <iomanip>
 #include <string>
 #include "node.hpp"
-#include "y.tab.h"
+#include "nodeVals.h"
+#include "program3.tab.h"
 
 using std::string;
 using std::endl;
 using std::cerr;
 using std::cout;
+
+int col = 1;
+int err = 0;
 
 void yyerror (const char *string)
 {
@@ -24,37 +28,37 @@ SPACE [ \t]
 
 %%
 
-int {
+"int" {
    return INT;
    }
-print {
+"print" {
    return PRINT;
    }
-void { 
+"void" { 
    return VOID;
    }
-if {
+"if" {
    return IF;
    }
-read {
+"read" {
    return READ;
    }
-else {
+"else" {
    return ELSE;
    }
-class {
+"class" {
    return CLASS;
    }
-return {
+"return" {
    return RETURN;
    }
-this {
+"this" {
    return THIS;
    }
-new {
+"new" {
    return NEW;
    }
-while {
+"while" {
    return WHILE;
    }
 [_a-zA-Z][_a-zA-Z0-9]* {
@@ -84,6 +88,8 @@ while {
 {SPACE}+ {
    }
 [0-9]+ {
+    yylval.vals = new nodeVals (yylineno, col, yyleng, "NUMBER", yytext);
+    col += yyleng;
     return NUM;
    }
 \=\= {

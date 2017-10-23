@@ -2,7 +2,8 @@
 #include<fstream>
 #include<string>
 #include"node.hpp"
-#include"y.tab.h"
+#include"nodeVals.h"
+#include"program3.tab.h"
 #include<FlexLexer.h>
 
 using std::ifstream;

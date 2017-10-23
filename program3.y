@@ -2,6 +2,7 @@
 #include <iostream>
 #include <FlexLexer.h>
 #include "node.hpp"
+#include "nodeVals.h"
 
 using std::cerr;
 using std::cout;
@@ -17,51 +18,63 @@ void yyerror (const char *);
 %}
 
 %union {
-  Node* ttype;
+  Node* nptr;
+  nodeVals* vals;
 }
 
-%type <ttype> exp 
-%token <ttype> NUM ID
-%token EQUALTO LESSOREQ GREATEROREQ NOTEQUAL GREATER LESS NOT OR AND MOD
-%token RPAREN LPAREN INT PRINT VOID IF READ ELSE CLASS RETURN THIS NEW WHILE 
-%right EQUALS
-%left PLUS MINUS OR
-%left TIMES DIV AND
+%type <nptr> exp statement idst
+%token <vals> NUM ID
+%token <nptr> EQUALS
+%token <nptr> EQUALTO LESSOREQ GREATEROREQ NOTEQUAL GREATER LESS NOT OR AND MOD
+%token <nptr> RPAREN LPAREN INT PRINT VOID IF READ ELSE CLASS RETURN THIS NEW WHILE 
+//%right EQUALS
+%left <nptr> PLUS MINUS //OR
+%left <nptr> TIMES DIV //AND
 
 
 %%
-
-input: exp  {
+input: statement{
              tree=$1;
              }
 ;
-exp: NUM  {
-           $$=new nodeNum($1->getint()); delete $1;
+
+statement: idst EQUALS exp {
+          string eq = "=";
+          $$=new assignNode($1,eq,$3);
           }
-     | ID {
-           $$=new nodeNum($1->getint()); delete$1;
-          }
-                     
-     | exp PLUS exp { 
-                     $$=new Node($1,$3);
-                     $$->setval(" + ");
-                    }
-     | exp MINUS exp { 
-                     $$=new Node($1,$3);
-                     $$->setval(" - ");
-                     }
-     | exp TIMES exp {
-                     $$=new Node($1,$3);
-                     $$->setval(" * ");
-                     }
-     | exp DIV exp   { 
-                     $$=new Node($1,$3);
-                     $$->setval(" / ");
-                     }
-     | LPAREN exp RPAREN {
-                     $$=new exp($2);   
-                     }
 ;
+
+idst: ID{
+             $$=new idNode($1->iinput);
+      }
+
+
+exp: NUM  {
+           $$=new nodeNum($1->iinput); delete $1; 
+          }
+     |exp PLUS exp{
+           string s = "+";
+           $$=new addsubNode($1,s,$3); 
+          }
+     |exp MINUS exp{
+           string s ="-";
+           $$=new addsubNode($1,s,$3);
+          }
+     |exp TIMES exp{
+           string s = "*";
+           $$=new muldivNode($1,s,$3); 
+          }
+     |exp DIV exp{
+           string s ="/";
+           $$=new muldivNode($1,s,$3);
+          }
+           
+     
+                     
+;
+
+
+
 
 %%
 
