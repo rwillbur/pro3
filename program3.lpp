@@ -1,4 +1,7 @@
 %{
+//Robert Willburn
+//Compilers
+//23 Oct 17
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -29,6 +32,8 @@ SPACE [ \t]
 %%
 
 "int" {
+   yylval.vals = new nodeVals (yylineno, col, yyleng, "INT", yytext);
+   col += yyleng;
    return INT;
    }
 "print" {
@@ -62,8 +67,14 @@ SPACE [ \t]
    return WHILE;
    }
 [_a-zA-Z][_a-zA-Z0-9]* {
+   yylval.vals = new nodeVals (yylineno, col, yyleng, "ID", yytext);
+   col += yyleng;
    return ID;
    }
+"[" { return LBRACKET; }
+
+"]" { return RBRACKET; }
+
 \( {
    return LPAREN;
    }
@@ -122,6 +133,10 @@ SPACE [ \t]
 \% {
    return MOD;
    }
+";" {
+     return SEMI;
+   }
+
 \/\/[^\n]*\n {
    }
 [\n] {

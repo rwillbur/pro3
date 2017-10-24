@@ -1,3 +1,6 @@
+//Robert Willburn
+//Compilers
+//23 Oct 17
 #ifndef NODE_HPP
 #define NODE_HPP
 #include<iostream>
@@ -25,7 +28,7 @@ class Node
  }
  virtual ~Node()
   {
-   for(int i =0; i < nodes.size(); i++)
+   for(unsigned int i =0; i < nodes.size(); i++)
    {
     delete nodes[i];
    }
@@ -60,7 +63,7 @@ class Node
  }
  void reset() 
  {
-  line =1; col=1;
+  lines =1; col=1;
   sval.clear();
  }
  void setNode (Node *p, int index)
@@ -92,7 +95,7 @@ class Node
 
  protected:
   int col; 
-  int line;
+  int lines;
 
   int ival;
   double dval;
@@ -110,26 +113,107 @@ class nodeNum : public Node
    num = atoi(s.c_str());
   }
   virtual void print(ostream * out =0){
-   cout << "<EXP> -> NUM " << endl;
+   cout << "<EXP> -> NUM " << num <<endl;
   }
   private:
    int num;
  };
 
-class idNode : public Node
- {
+class sNode : public Node
+{
  public:
-  idNode(string s) : Node(){
- idv = s; 
-}
- virtual void print(ostream * out=0){
-  cout << "<ID> " <<endl;
- }
-  
- private:
-  string idv;
+  sNode (Node* s) : Node(){
+   n = s;  }
+  virtual void print(ostream * out =0){
+   cout << "<SIMPLETYPE> -> ";
+   n->print();
+  }
+  private:
+   Node* n;
+ };
 
+ class varNode : public Node
+{
+ public:
+  varNode (Node* n1, Node* n2, string sem) : Node(){
+   
+   tnod = n1;
+   idnod = n2;
+   semi = sem;
+  }
+  virtual void print(ostream * out =0){
+   cout<<"<SIMPLETYPE> -> <ID> "<<semi <<endl;
+   tnod->print();
+   cout << " " ;
+   idnod->print();
+   cout<<semi<<endl<<endl;
+  
+  }
+  private:
+   Node* tnod;
+   Node* idnod;
+   string eqs;
+   string semi;
+ };
+
+class simpNode : public Node
+{
+ public:
+  simpNode (Node* n, bool b, Node* n2 = 0, Node* n3 = 0) : Node(){
+   nod = n;
+   bracks = b;
+  }
+  virtual void print(ostream * out =0){
+    
+   if(bracks){
+    cout<<brackets;
+   }
+   nod->print();
+   }
+   private:
+   Node* nod;
+   bool bracks = false;
+   string brackets = " []";
 };
+
+ class idNode : public Node
+{
+ public:
+  idNode (string s, bool b) : Node(){
+   idv = s;
+   bracks = b;
+  }
+  virtual void print(ostream * out =0)
+  {
+   cout << "<ID> " << idv;
+   if(bracks)
+    {
+     cout<<brackets;
+    }
+  }
+  private:
+   string idv;
+   string brackets = " []";
+   bool bracks = false;
+ };
+
+ class intNode : public Node
+{
+ public:
+  intNode (string s) : Node(){
+   idv = s;
+  }
+  virtual void print(ostream * out =0)
+  {
+   cout << "<TYPE> " << idv;
+  }
+  private:
+   string idv;
+ };
+ 
+
+ 
+
 
 class muldivNode : public Node
  {
@@ -167,7 +251,7 @@ virtual void print(ostream * out=0){
    node1->print();
    cout << "Right Child ";
    node2->print();
-  
+ 
   }
   private:
    Node* node1 =0;
@@ -178,27 +262,39 @@ virtual void print(ostream * out=0){
 class assignNode : public Node
  {
   public:
-  assignNode (Node* n1, string s2, Node* n2) : Node(){
+  assignNode (Node* n1, string s, Node* n2, string s2) : Node(){
    node1 = n1;
    node2 = n2;
-   svalue = s2;
+   svalue = s;
+   svalue2 = s2;
   
 } 
 virtual void print(ostream * out=0){
-   cout << "<ID> " << svalue << " <EXP>"<<endl;
-   cout << "Left Child ";
+   cout << "<ID> " << svalue << " <EXP>" << svalue2 <<endl;
    node1->print();
-   cout << "Right Child ";
+   cout << endl;
    node2->print();
-  
   }
   private:
    Node* node1 =0;
    Node* node2 =0;
    string svalue;
+   string svalue2;
 
 };
 
-  
+class errorN : public Node
+{
+ public:
+  errorN(string err) : Node () {
+  errorS = err;
+  }
+ virtual void printNode(ostream * out =0)
+ {
+  cout << errorS << "Error " << endl;
+ }
+ private:
+  string errorS;
+};  
 
 #endif

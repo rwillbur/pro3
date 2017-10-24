@@ -14,15 +14,15 @@ using std::cout;
 using std::endl;
 
 yyFlexLexer scanner;
-Node *tree;
+vector<Node*> trees;
 
 int main(int argc, char **argv)
 {
- string infile, outfile;
+ /* string infile, outfile;
  int position;
  ifstream input;
  ostream output(NULL);
- tree = 0;
+ trees = 0;
  
  int i;
  if(argc>1)
@@ -50,24 +50,31 @@ int main(int argc, char **argv)
      cerr<< "CANT OPEN" << infile <<endl;
      continue;
     }  
-    /*output.open(outfile);
+    output.open(outfile);
     if(!output){
      cerr<< "CANT OPEN OUTFILE " << outfile <<endl;
      input.close();
      cerr << "Skipping : " <<infile << endl;
      continue;
-    }*/
+    }
     scanner.switch_streams(&input);
     yyparse();
-    tree->print(&output);
+    trees->print(&output);
     output << endl;
    }
    else {
    yyparse();
    cout << "Print tree " <<endl;
-   tree->print(&cout);
+   trees->print(&cout);
    cout << endl;
-   }
+   } */
+    
+    
+    yyparse();
+    for(unsigned int i = 0; i < trees.size(); i++)
+    {
+      trees[i]->print();
+    }
    return 0;
 }
 
